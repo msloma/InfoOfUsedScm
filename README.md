@@ -12,8 +12,8 @@ The service stores information about which SCM system (Git, SVN, Mercurial, etc.
 
 ## Technologies
 
-- Java 17
-- Spring Boot 2.7.0
+- Java 21
+- Spring Boot 3.4.0
 - Maven
 - Docker
 
@@ -21,7 +21,7 @@ The service stores information about which SCM system (Git, SVN, Mercurial, etc.
 
 ### Prerequisites
 
-- Java 17 or higher
+- Java 21 or higher
 - Maven 3.6 or higher
 - Docker (optional, for containerized deployment)
 

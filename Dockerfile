@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build the application
-FROM eclipse-temurin:17-jdk-jammy as build
+FROM eclipse-temurin:21-jdk-jammy as build
 
 WORKDIR /app
 
@@ -24,12 +24,11 @@ RUN ./mvnw package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 # Stage 2: Create the runtime image
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 
 ARG DEPENDENCY=/app/target/dependency
 
-# Create a non-root user - using commands compatible with Ubuntu/Debian (jammy is Ubuntu-based)
-# The eclipse-temurin:17-jre-jammy image is based on Ubuntu, so these commands should work
+# Create a non-root user
 RUN groupadd --system --gid 1001 appuser && \
     useradd --system --uid 1001 --gid 1001 --create-home appuser
 
