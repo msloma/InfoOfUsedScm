@@ -8,14 +8,17 @@ This service allows you to:
 - Retrieve SCM information for a specific asset code
 - Add new SCM information for assets
 
-The service stores information about which SCM system (Git, SVN, Mercurial, etc.) is used by each asset, along with the repository URL.
+The service stores information about which SCM system (Git, SVN, Mercurial, etc.) is used by each asset, along with the repository URL. It uses Redis for distributed caching and session management, making it scalable in a Kubernetes environment.
 
 ## Technologies
 
 - Java 21
 - Spring Boot 3.4.0
+- Spring Data Redis
+- Spring Session
 - Maven
 - Docker
+- Kubernetes
 
 ## Getting Started
 
@@ -23,7 +26,8 @@ The service stores information about which SCM system (Git, SVN, Mercurial, etc.
 
 - Java 21 or higher
 - Maven 3.6 or higher
-- Docker (optional, for containerized deployment)
+- Docker and Docker Compose (for containerized deployment)
+- Kubernetes cluster (for Kubernetes deployment)
 
 ### Running Locally
 
@@ -45,22 +49,48 @@ The service stores information about which SCM system (Git, SVN, Mercurial, etc.
 
 4. The service will be available at http://localhost:8080
 
-### Running with Docker
+### Running with Docker Compose
 
-1. Build the Docker image:
+1. Build and start the services:
    ```
-   docker build -t scm-service .
-   ```
-
-2. Run the container:
-   ```
-   docker run -p 8080:8080 scm-service
+   docker compose up -d
    ```
 
-3. Alternatively, use Docker Compose:
+2. The service will be available at http://localhost:8080
+
+### Deploying to Kubernetes
+
+1. Build and push the Docker image to your registry:
    ```
-   docker compose up
+   docker build -t your-registry/scm-service:latest .
+   docker push your-registry/scm-service:latest
    ```
+
+2. Update the image reference in `k8s/scm-service-deployment.yaml`
+
+3. Apply the Kubernetes manifests:
+   ```
+   kubectl apply -f k8s/
+   ```
+
+4. Access the service through the Kubernetes service:
+   ```
+   kubectl port-forward svc/scm-service 8080:80
+   ```
+
+## Scaling
+
+The application is designed to be scalable in a Kubernetes environment:
+
+- Redis is used for distributed caching and session management
+- Health checks are configured for proper pod lifecycle management
+- Resource limits are defined to ensure efficient resource utilization
+
+To scale the application:
+
+```
+kubectl scale deployment scm-service --replicas=5
+```
 
 ## API Documentation
 
